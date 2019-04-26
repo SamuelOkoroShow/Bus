@@ -6,7 +6,10 @@ var payload = Payload;
 var {height, width} = Dimensions.get('window');
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-var full_segment = 330;
+var full_segment = 630;
+var counter = 0;
+var segmentComplete = true;
+
 export default class App extends React.Component {
   constructor(){
     super()
@@ -67,15 +70,63 @@ export default class App extends React.Component {
 
 }
 
-hp_segment(){
+segment_color(seg){
         var health1,health2,health3;
-        health1 = "#f96062"
-        health2 = "#fbd34e"
-        health3 = "#b7eb9b"
+
+        if(seg < 100){
+          return "#f96062"
+        }
+
+        if(seg >= 100 && seg < 200){
+          return "#fbd34e"
+        }
+        if(seg >= 200){
+          return "#b7eb9b"
+        }
 }
 
-
   _row(data){
+    
+    if(segmentComplete){
+      counter = 0
+    }
+    counter = counter + data.duration
+    segmentComplete = false
+    var nextCount = 0;
+
+    for(var i=0; i< payload.length; i++){
+          var payid
+              if(data.id == payload[i].id)
+                if(payload[i+1] != null){
+                nextCount = counter + payload[i+1].duration}
+                //payload.splice(payload[i].id, 1);
+              //console.log(data.id)
+            }
+            console.log(nextCount)
+
+     
+    if(nextCount >= full_segment){
+      
+      segmentComplete = true
+      counter = counter + data.duration
+    }
+    if(segmentComplete){
+        return(<View><View style={{margin:5, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+          <TouchableOpacity style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} onPress = {() => this.update(data)}>
+          <Text>   {data.id}  </Text>
+          <Text>{data.name}</Text>
+          <Text style={{color:'#d15571'}}>   {data.type}</Text>
+          <Text>   {data.duration}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{backgroundColor:'#333', padding:6, width:30,height:30, alignItems:'center', justifyContent:'center'}} onPress = {() => this.close(data)}>
+          <Text style={{color:"#eeff"}}>x</Text>
+          </TouchableOpacity>
+          </View>
+          <View style={{width:((width*counter)/full_segment), borderBottomWidth:3, borderColor:this.segment_color(counter), height:1 }}/>
+          <View style={{height:10, alignItems:'center', margin:5}}><Text style={{padding:3,fontSize:11, color:'#fff', backgroundColor:"#f96062"}}>SEGMENT COMPLETE</Text></View>
+          </View>)
+        }
+
     return(<View><View style={{margin:5, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
       <TouchableOpacity style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} onPress = {() => this.update(data)}>
       <Text>   {data.id}  </Text>
@@ -87,10 +138,10 @@ hp_segment(){
       <Text style={{color:"#eeff"}}>x</Text>
       </TouchableOpacity>
       </View>
-      <View style={{width:width, borderBottomWidth:1,height:3 }}>
-      <View />
-      </View>
-      </View>)
+      <View style={{width:((width*counter)/full_segment), borderBottomWidth:3, borderColor:this.segment_color(counter), height:1 }} />
+      </View>) 
+
+    
   }
   render() {
     return (
@@ -108,10 +159,10 @@ hp_segment(){
         <Text>Uniques</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress = {() => this.sort_descending(payload)} style={{borderRadius:5, margin:3, backgroundColor:'#d15571', alignItems:'center', justifyContent:'center', flex:1}}>
-        <Text style={{color:'#fff'}}>Decending</Text>
+        <Text style={{color:'#fff'}}>Randomize</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress = {() => this.sort_ascending(payload)} style={{borderRadius:5, margin:3, backgroundColor:'#eee', alignItems:'center', justifyContent:'center', flex:1}}>
-        <Text>Ascending</Text>
+        <Text>Decending</Text>
         </TouchableOpacity>
         <Text style={{color:'#eee', fontSize:8, top:0, backgroundColor:'#333', position:'absolute'}}>
         CHRONOLOGICAL

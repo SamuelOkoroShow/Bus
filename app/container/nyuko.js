@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dimensions,ScrollView, UIManager,TouchableOpacity, StyleSheet, Text, LayoutAnimation, ListView, View } from 'react-native';
-import Payload from './app/mock/payload'
-import Cat from './app/mock/categories'
+import Payload from '../mock/payload'
+import Cat from '../mock/categories'
 
 var categories = Cat
 var payload = Payload;

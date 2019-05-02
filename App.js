@@ -59,7 +59,20 @@ export default class App extends React.Component {
   }
   return ret;
 }
+  _initSelected(){
+    for(var i =0; i < payload.length; i++){
+      payload[i].selected = false
+    }
+  }
 
+ componentDidMount(){
+    this._initSelected()
+    payload[4].selected = true
+
+    this.setState({
+      dataSource: ds.cloneWithRows(payload),
+    })
+  }
 
     close(data){
       day = 1;
@@ -94,6 +107,33 @@ segment_color(seg){
  queue(){
 
   }
+
+  deselect(){
+    console.log("deselect")
+    this._initSelected()
+    this.setState({
+      dataSource: ds.cloneWithRows(payload)
+    })
+
+  }
+
+  _makeSelection(data){
+    console.log("This function")
+    this._initSelected();
+    for(var i =0; i < payload.length; i++){
+      if(payload[i].id == data.id){
+        payload[i].selected = true
+        console.log(payload[i])
+      }
+    }
+
+    
+    this.setState({
+      dataSource : ds.cloneWithRows(payload)
+    })
+
+  }
+
   eachCat(name){
 
     if(this.state.update_height == 140){
@@ -136,12 +176,29 @@ segment_color(seg){
       dayCounter = 0
     }
 
-   
 
-    if(segmentComplete)
-    {
+    if(segmentComplete){
+      if(data.selected){
+         return(<View><View style={{margin:5, flexDirection:'row',backgroundColor:'#333', borderRadius:5, justifyContent:'space-between', alignItems:'center'}}>
+          <TouchableOpacity onPress = {() => this.deselect()} style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+          <Text style={{color:'#eee'}}>   {data.id}  </Text>
+          <Text style={{color:'#eee'}}>{data.name}</Text>
+          <Text style={{color:'#fbd34e'}}>   {data.type}</Text>
+          <Text style={{color:'#eee'}}>   {data.duration}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{borderRadius:5, backgroundColor:'#333', padding:6, width:30,height:30, alignItems:'center', justifyContent:'center'}} onPress = {() => this.close(data)}>
+          <Text style={{color:"#fbd34e"}}>x</Text>
+          </TouchableOpacity>
+          </View>
+          <View style={{width:((width*counter)/full_segment), borderBottomWidth:3, borderColor:this.segment_color(counter), height:1 }}/>
+          <View style={{height:29, alignItems:'center', margin:5}}>
+          <Text style={{padding:3,fontSize:11, color:'#fff', backgroundColor:"#f96062"}}>SEGMENT COMPLETE</Text>
+          <Text style={{padding:3,fontSize:11, color:'#fff', backgroundColor:"#444"}}>Day:{day}</Text>
+          </View>
+          </View>)
+      }
         return(<View><View style={{margin:5, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-          <TouchableOpacity style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+          <TouchableOpacity onPress = {() => this.deselect()} style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
           <Text>   {data.id}  </Text>
           <Text>{data.name}</Text>
           <Text style={{color:'#d15571'}}>   {data.type}</Text>
@@ -159,8 +216,23 @@ segment_color(seg){
           </View>)
       }
 
+      if(data.selected){
+         return(<View><View style={{margin:5, flexDirection:'row',backgroundColor:'#333', borderRadius:5, justifyContent:'space-between', alignItems:'center'}}>
+          <TouchableOpacity onPress = {() => this.deselect()} style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+          <Text style={{color:'#eee'}}>   {data.id}  </Text>
+          <Text style={{color:'#eee'}}>{data.name}</Text>
+          <Text style={{color:'#fbd34e'}}>   {data.type}</Text>
+          <Text style={{color:'#eee'}}>   {data.duration}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{borderRadius:5, backgroundColor:'#333', padding:6, width:30,height:30, alignItems:'center', justifyContent:'center'}} onPress = {() => this.close(data)}>
+          <Text style={{color:"#fbd34e"}}>x</Text>
+          </TouchableOpacity>
+          </View>
+          <View style={{width:((width*counter)/full_segment), borderBottomWidth:3, borderColor:this.segment_color(counter), height:1 }}/>
+          </View>)
+      }
     return(<View><View style={{margin:5, flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-      <TouchableOpacity style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} onPress = {() => this.update(data)}>
+      <TouchableOpacity onPress = {() => this._makeSelection(data)} style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
       <Text>   {data.id}  </Text>
       <Text>{data.name}</Text>
       <Text style={{color:'#d15571'}}>   {data.type}</Text>

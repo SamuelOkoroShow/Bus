@@ -29,6 +29,8 @@ export default class App extends React.Component {
     }
   }
 
+ 
+
   componentDidUpdate(){
     UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring)
@@ -107,6 +109,7 @@ segment_color(seg){
 
   _row(data){
     
+
     if(segmentComplete){
       counter = 0
     }
